@@ -19,7 +19,7 @@ public class TestExecutorService {
             System.setOut(printStream);
             
             String[] args = {
-                "--glue", "com.example.demo.steps",
+                "--glue", "com.at.gz.test",
                 "--tags", tags != null ? tags : "",
                 "classpath:features/" + featureName + ".feature"
             };
@@ -28,7 +28,13 @@ public class TestExecutorService {
             
             return "Test execution completed with status: " + exitStatus + 
                    "\nOutput:\n" + outputStream.toString();
-        } finally {
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+            return e.getMessage();
+        }
+
+        finally {
             System.setOut(originalOut);
         }
     }

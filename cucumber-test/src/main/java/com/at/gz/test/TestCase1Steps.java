@@ -1,39 +1,41 @@
-// TestCase1Steps.java
 package com.at.gz.test;
 
 import com.at.gz.DatabaseService;
-import com.at.gz.DemoApplication;
-import io.cucumber.java.en.Given;
-import io.cucumber.java.en.Then;
-import io.cucumber.java.en.When;
-import io.cucumber.spring.CucumberContextConfiguration;
+import io.cucumber.java.Before;
+import io.cucumber.java.Scenario;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
+import io.cucumber.java8.En;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@CucumberContextConfiguration
-@ContextConfiguration(classes = {DemoApplication.class})
-public class TestCase1Steps {
-    
+public class TestCase1Steps implements En {
+
     @Autowired
     private DatabaseService databaseService;
-    
+
     private String userId;
     private String actualUserName;
-    
-    @Given("a user with ID {string}")
-    public void a_user_with_id(String userId) {
-        this.userId = userId;
+    private Scenario scenario;
+    @Before
+    public void before(Scenario scenario) {
+        this.scenario = scenario;
     }
-    
-    @When("I request the user's name")
-    public void i_request_the_user_s_name() {
-        this.actualUserName = databaseService.getUserName(userId);
-    }
-    
-    @Then("the response should be {string}")
-    public void the_response_should_be(String expectedUserName) {
-        assertEquals(expectedUserName, actualUserName);
+
+    public TestCase1Steps() {
+
+        Given("a user with ID {string}", (String id) -> {
+            scenario.log("user id is " + id);
+            this.userId = id;
+        });
+
+        When("I request the user's name", () -> {
+            scenario.log("I request the user's name ");
+            this.actualUserName = databaseService.getUserName(userId);
+        });
+
+        Then("the response should be {string}", (String expectedUserName) -> {
+            scenario.log("the response should be: "+expectedUserName);
+            assertEquals(expectedUserName, actualUserName);
+        });
     }
 }
